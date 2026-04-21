@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DiabeTech — Controle de Glicemia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo">
+        <span class="logo-icon">◈</span>
+        Diabe<strong>Tech</strong>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#inicio">Início</a></li>
+        <li><a href="#registrar">Registrar</a></li>
+        <li><a href="#historico">Histórico</a></li>
+        <li><a href="#medico">Dr. Fabrício</a></li>
+        <li><a href="#info">Sobre DM1</a></li>
+      </ul>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu">&#9776;</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="inicio">
+    <div class="hero-bg-dots"></div>
+    <div class="container">
+      <div class="hero-badge">Projeto de Extensão V · ADS · Descomplica</div>
+      <h1 class="hero-title">Controle de<br><span class="accent">Glicemia</span> inteligente</h1>
+      <p class="hero-sub">Sistema web acessível para pacientes com Diabetes Tipo 1. Registre medições, visualize gráficos e compartilhe dados com seu médico — de qualquer dispositivo.</p>
+      <div class="hero-actions">
+        <a href="#registrar" class="btn btn-primary">Registrar medição</a>
+        <a href="#info" class="btn btn-ghost">Saiba mais</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hstat"><span class="hstat-val" id="hs-total">0</span><span class="hstat-label">Registros</span></div>
+        <div class="hstat-divider"></div>
+        <div class="hstat"><span class="hstat-val" id="hs-media">--</span><span class="hstat-label">Média mg/dL</span></div>
+        <div class="hstat-divider"></div>
+        <div class="hstat"><span class="hstat-val" id="hs-ultima">--</span><span class="hstat-label">Última medição</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ALERT BANNER -->
+  <div class="alert-banner" id="alertBanner" style="display:none;">
+    <div class="container">
+      <span class="alert-icon" id="alertIcon">⚠</span>
+      <span id="alertMsg"></span>
+      <button onclick="closeAlert()" class="alert-close">×</button>
+    </div>
+  </div>
+
+  <!-- METRICS -->
+  <section class="section-metrics">
+    <div class="container">
+      <div class="metrics-grid">
+        <div class="metric-card" id="mc-ultima">
+          <div class="metric-label">Última medição</div>
+          <div class="metric-value" id="mv-ultima">--</div>
+          <div class="metric-unit">mg/dL</div>
+        </div>
+        <div class="metric-card" id="mc-media">
+          <div class="metric-label">Média do dia</div>
+          <div class="metric-value" id="mv-media">--</div>
+          <div class="metric-unit">mg/dL</div>
+        </div>
+        <div class="metric-card" id="mc-min">
+          <div class="metric-label">Mínima</div>
+          <div class="metric-value" id="mv-min">--</div>
+          <div class="metric-unit">mg/dL</div>
+        </div>
+        <div class="metric-card" id="mc-max">
+          <div class="metric-label">Máxima</div>
+          <div class="metric-value" id="mv-max">--</div>
+          <div class="metric-unit">mg/dL</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REGISTRO -->
+  <section class="section" id="registrar">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Registrar medição</h2>
+        <p class="section-desc">Adicione o valor da sua glicemia, o horário e o momento em relação à refeição.</p>
+      </div>
+      <div class="card form-card">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="inp-valor">Valor glicêmico</label>
+            <div class="input-with-unit">
+              <input type="number" id="inp-valor" min="20" max="600" placeholder="120" />
+              <span class="input-unit">mg/dL</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inp-hora">Horário</label>
+            <input type="time" id="inp-hora" />
+          </div>
+          <div class="form-group">
+            <label for="inp-data">Data</label>
+            <input type="date" id="inp-data" />
+          </div>
+          <div class="form-group">
+            <label for="inp-ref">Momento</label>
+            <select id="inp-ref">
+              <option value="Jejum">Jejum</option>
+              <option value="Pré-café">Pré-café</option>
+              <option value="Pós-café">Pós-café</option>
+              <option value="Pré-almoço">Pré-almoço</option>
+              <option value="Pós-almoço">Pós-almoço</option>
+              <option value="Pré-jantar">Pré-jantar</option>
+              <option value="Pós-jantar">Pós-jantar</option>
+              <option value="Antes de dormir">Antes de dormir</option>
+            </select>
+          </div>
+          <div class="form-group form-group-obs">
+            <label for="inp-obs">Observação (opcional)</label>
+            <input type="text" id="inp-obs" placeholder="Ex: após exercício, sintoma de tontura..." />
+          </div>
+        </div>
+        <div class="form-footer">
+          <div class="faixa-info">
+            <span class="faixa-dot ok"></span> Normal: 70–180 &nbsp;
+            <span class="faixa-dot low"></span> Hipo: &lt;70 &nbsp;
+            <span class="faixa-dot high"></span> Hiper: &gt;180
+          </div>
+          <button class="btn btn-primary" onclick="addMedicao()">Adicionar medição</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GRÁFICO -->
+  <section class="section section-chart">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Evolução glicêmica</h2>
+        <div class="chart-filters">
+          <button class="filter-btn active" onclick="setFilter('hoje', this)">Hoje</button>
+          <button class="filter-btn" onclick="setFilter('7d', this)">7 dias</button>
+          <button class="filter-btn" onclick="setFilter('todos', this)">Todos</button>
+        </div>
+      </div>
+      <div class="card chart-card">
+        <div class="chart-legend">
+          <span><span class="leg-dot" style="background:#22c55e;"></span>Normal (70–180)</span>
+          <span><span class="leg-dot" style="background:#ef4444;"></span>Hipoglicemia</span>
+          <span><span class="leg-dot" style="background:#f59e0b;"></span>Hiperglicemia</span>
+        </div>
+        <div class="chart-container">
+          <canvas id="glicChart" role="img" aria-label="Gráfico de linha da evolução glicêmica do paciente.">Sem dados registrados.</canvas>
+        </div>
+        <div class="chart-empty" id="chartEmpty">
+          <div class="empty-icon">📊</div>
+          <p>Adicione medições para visualizar o gráfico.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HISTÓRICO -->
+  <section class="section" id="historico">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Histórico de medições</h2>
+        <div class="hist-actions">
+          <select id="hist-filter" onchange="renderHistory()">
+            <option value="todos">Todos</option>
+            <option value="ok">Normal</option>
+            <option value="low">Hipoglicemia</option>
+            <option value="high">Hiperglicemia</option>
+          </select>
+          <button class="btn btn-ghost btn-sm" onclick="exportCSV()">Exportar CSV</button>
+        </div>
+      </div>
+      <div class="card">
+        <div id="hist-content">
+          <div class="empty-state">
+            <div class="empty-icon">📋</div>
+            <p>Nenhuma medição registrada ainda.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAINEL MÉDICO -->
+  <section class="section section-medico" id="medico">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Painel do médico</h2>
+        <p class="section-desc">Resumo clínico para o Dr. Fabrício — visibilidade completa do histórico do paciente.</p>
+      </div>
+      <div class="medico-grid">
+        <div class="card medico-resumo">
+          <div class="medico-header">
+            <div class="medico-avatar">F</div>
+            <div>
+              <div class="medico-name">Dr. Fabrício</div>
+              <div class="medico-role">Médico responsável · Belo Horizonte</div>
+            </div>
+          </div>
+          <div class="medico-stats">
+            <div class="mstat"><div class="mstat-label">Total de registros</div><div class="mstat-val" id="d-total">0</div></div>
+            <div class="mstat"><div class="mstat-label">Média geral</div><div class="mstat-val" id="d-media">--</div></div>
+            <div class="mstat"><div class="mstat-label">Hipoglicemias</div><div class="mstat-val danger" id="d-hipo">0</div></div>
+            <div class="mstat"><div class="mstat-label">Hiperglicemias</div><div class="mstat-val warn" id="d-hiper">0</div></div>
+          </div>
+        </div>
+        <div class="card medico-dist">
+          <div class="card-title">Distribuição das medições</div>
+          <div class="dist-item">
+            <span class="dist-label">Normal</span>
+            <div class="dist-bar-wrap"><div class="dist-bar ok" id="bar-ok" style="width:0%"></div></div>
+            <span class="dist-pct" id="pct-ok">0%</span>
+          </div>
+          <div class="dist-item">
+            <span class="dist-label">Hipoglicemia</span>
+            <div class="dist-bar-wrap"><div class="dist-bar low" id="bar-hipo" style="width:0%"></div></div>
+            <span class="dist-pct" id="pct-hipo">0%</span>
+          </div>
+          <div class="dist-item">
+            <span class="dist-label">Hiperglicemia</span>
+            <div class="dist-bar-wrap"><div class="dist-bar high" id="bar-hiper" style="width:0%"></div></div>
+            <span class="dist-pct" id="pct-hiper">0%</span>
+          </div>
+          <div class="medico-obs" id="medico-obs">
+            <p>Nenhum dado disponível ainda.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOBRE DM1 -->
+  <section class="section section-info" id="info">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Sobre o Diabetes Tipo 1</h2>
+      </div>
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="info-icon">🩺</div>
+          <h3>O que é?</h3>
+          <p>Condição autoimune em que o sistema imunológico ataca as células beta do pâncreas, responsáveis pela produção de insulina. Exige monitoramento contínuo da glicose.</p>
+        </div>
+        <div class="info-card">
+          <div class="info-icon">⚠️</div>
+          <h3>Sintomas</h3>
+          <p>Sede intensa, poliúria, fome excessiva, perda de peso involuntária, fadiga, visão embaçada e mudanças de humor são os principais sintomas.</p>
+        </div>
+        <div class="info-card">
+          <div class="info-icon">💉</div>
+          <h3>Tratamento</h3>
+          <p>Aplicações regulares de insulina, alimentação balanceada, atividade física monitorada e acompanhamento médico frequente são essenciais.</p>
+        </div>
+        <div class="info-card">
+          <div class="info-icon">📊</div>
+          <h3>Faixas de referência</h3>
+          <p><strong>Normal:</strong> 70–180 mg/dL<br><strong>Hipoglicemia:</strong> abaixo de 70 mg/dL<br><strong>Hiperglicemia:</strong> acima de 180 mg/dL</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-logo">◈ DiabeTech</div>
+      <p class="footer-desc">Sistema web de controle de glicemia para pacientes com Diabetes Tipo 1.</p>
+      <p class="footer-credits">Desenvolvido por <strong>Pedro Rafael Lima Dias</strong> · PEX V — ADS · Descomplica · Orientação: Dr. Fabrício · Belo Horizonte, 2026</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
